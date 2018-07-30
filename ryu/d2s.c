@@ -227,14 +227,6 @@ struct floating_decimal_64 {
 static inline struct floating_decimal_64 d2d(uint64_t ieeeMantissa, uint32_t ieeeExponent) {
   const uint32_t offset = (1u << (DOUBLE_EXPONENT_BITS - 1)) - 1;
 
-#ifdef RYU_DEBUG
-  printf("IN=");
-  for (int32_t bit = 63; bit >= 0; --bit) {
-    printf("%d", (int) ((bits >> bit) & 1));
-  }
-  printf("\n");
-#endif
-
   int32_t e2;
   uint64_t m2;
   // Case distinction; exit early for the easy cases.
@@ -431,6 +423,14 @@ int d2s_buffered_n(double f, char* result) {
   uint64_t bits = 0;
   // This only works on little-endian architectures.
   memcpy(&bits, &f, sizeof(double));
+
+#ifdef RYU_DEBUG
+  printf("IN=");
+  for (int32_t bit = 63; bit >= 0; --bit) {
+    printf("%d", (int) ((bits >> bit) & 1));
+  }
+  printf("\n");
+#endif
 
   const bool sign = ((bits >> (DOUBLE_MANTISSA_BITS + DOUBLE_EXPONENT_BITS)) & 1) != 0;
   const uint64_t ieeeMantissa = bits & ((1ull << DOUBLE_MANTISSA_BITS) - 1);
